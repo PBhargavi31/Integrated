@@ -32,7 +32,7 @@ public interface TicketService {
 
 	public List<Tickets> getTicketsByMid(long mid);
 	
-	
+	public void updateTicket(Tickets tickets);
 
 	
 	

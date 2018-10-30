@@ -105,6 +105,19 @@ public class TicketServiceImpl implements TicketService {
 		List<Tickets> t=tdao.findByUidIn(uids);
 		return t;
 	}
+	
+	
+	@Override
+	public void updateTicket(Tickets tickets) {
+	tdao.save(tickets);
+	}
+	
+	
+	
+	
+	
+	
+	
 	////
 	// @Override
 	// public List<Tickets> findAllBySwtype(Software swtype) {

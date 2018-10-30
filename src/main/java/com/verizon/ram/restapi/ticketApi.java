@@ -78,6 +78,23 @@ public ResponseEntity<Tickets> addTicketsAction(@RequestBody Tickets ticket) {
 		return resp;
 	}
 	
+	
+
+	 @PutMapping("/{tid}")
+	public ResponseEntity<Tickets> updateTicket(@RequestBody Tickets tickets){
+
+
+	ResponseEntity<Tickets> resp;
+	if(tickets!=null && tService.existsByTid(tickets.getTid())){
+	tService.updateTicket(tickets);
+
+	resp = new ResponseEntity<Tickets>(tickets, HttpStatus.OK);
+	}
+	else 
+	resp = new ResponseEntity<Tickets>(HttpStatus.NOT_FOUND);
+	return resp;
+	}
+	
 	@GetMapping("/status/{tstatus}")
 	public ResponseEntity<List<Tickets>> getTicketStatus(@PathVariable("tstatus") String tstatus) {
 		ResponseEntity<List<Tickets>> resp = null;

@@ -105,5 +105,7 @@ public class ResourceServiceImpl implements ResourceService {
 		return rd.findAllByRname(rname);
 	}
 
+	
+
 
 }

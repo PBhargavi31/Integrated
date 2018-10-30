@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.verizon.ram.model.Resourcer;
 import com.verizon.ram.model.Role;
+import com.verizon.ram.model.Rtype;
 import com.verizon.ram.model.Users;
 import com.verizon.ram.service.UserService;
 
@@ -31,27 +32,73 @@ public class UsersApi {
 
 	}
 	
-	@GetMapping("/admin/{id}")
-	public ResponseEntity<Users> getUserByUid(@PathVariable("id") long uid) {
-		ResponseEntity<Users> resp;
-		Users u = us.getUserById(uid);
-		if (u == null)
-			resp = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		else
-			resp = new ResponseEntity<>(u, HttpStatus.OK);
+	@GetMapping("/Role/{srchValue}")
+	public ResponseEntity<List<Users>> getEmpByRole (
+		
+		@PathVariable("srchValue") Role searchValue)
+	{
+		ResponseEntity<List<Users>> resp;
+			
+			
+				List<Users> results =us.findAllByRole(searchValue);
+				if(results!=null && results.size()!=0){
+					
+					resp=new ResponseEntity<>(results,HttpStatus.OK);}
+				else {
+					resp=new ResponseEntity<>(HttpStatus.NOT_FOUND);}
+	
+		
 		return resp;
 	}
 	
-	@GetMapping("/manager/{id}")
-	public ResponseEntity<List<Users>> getUserByMgrId(@PathVariable("id") long mid) {
-		ResponseEntity<List<Users>> resp;
-		List<Users> u = us.getUserByMid(mid);
+	
+	
+	@GetMapping("/admin/{id}")
+	public ResponseEntity<Users> getAdminByUid(@PathVariable("id") long uid) {
+		ResponseEntity<Users> resp = null;
+		Role r=null;
+		
+		Users u = us.getUserById(uid);
+		
+			
 		if (u == null)
 			resp = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		else
-			resp = new ResponseEntity<>(u, HttpStatus.OK);
+		else{ 
+			if (u.getRole()==r.ADMIN)
+			resp = new ResponseEntity<>(u, HttpStatus.OK);}
+		
 		return resp;
 	}
+	
+	@GetMapping("/employee/{id}")
+	public ResponseEntity<Users> getEmployeeByUid(@PathVariable("id") long uid) {
+		ResponseEntity<Users> resp = null;
+		Role r=null;
+		
+		Users u = us.getUserById(uid);
+		
+			
+		if (u == null)
+			resp = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		else{ 
+			
+			resp = new ResponseEntity<>(u, HttpStatus.OK);}
+		
+		return resp;
+	}
+	
+	
+	
+//	@GetMapping("/manager/{id}")//Search employees under a manager
+//	public ResponseEntity<List<Users>> getUserByMgrId(@PathVariable("id") long mid) {
+//		ResponseEntity<List<Users>> resp;
+//		List<Users> u = us.getUserByMid(mid);
+//		if (u == null)
+//			resp = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//		else
+//			resp = new ResponseEntity<>(u, HttpStatus.OK);
+//		return resp;
+//	}
 	
 	@GetMapping("/Emgr/{srchValue}")
 	public ResponseEntity<List<Users>> getAllRnames (
@@ -71,6 +118,22 @@ public class UsersApi {
 		return resp;
 	}
 	
+	@GetMapping("/{uid}")
+	public ResponseEntity<Users> getMgrById(@PathVariable("uid") long uid){
+		ResponseEntity<Users> resp;
+		Users rst= us.getUserById(uid);
+		long mid=rst.getMid();
+		Users rst1=us.getUserById(mid);
+		
+		if(rst1!=null )
+			resp=new ResponseEntity<>(rst1,HttpStatus.OK);
+		else
+			resp=new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		
+		return resp;	
+	}
+	
+	
 	
 	
 	@PostMapping
@@ -78,16 +141,26 @@ public class UsersApi {
 		ResponseEntity<Users> resp = null;
 		Role r=null;
 		
-		if (resp == null) {
-			Users u = us.addUser(user);
-			if(u.getRole()==r.MANAGER || u.getRole()==r.ADMIN){
-				u.setMid(0);
+		
+			
+			if(user.getRole()==r.MANAGER ){
+				user.setMid(0);
 			}
-			if (u == null)
-				resp = new ResponseEntity<Users>(HttpStatus.BAD_REQUEST);
-			else
-				resp = new ResponseEntity<>(u, HttpStatus.OK);
-		}
+			if( user.getRole()==r.ADMIN){user.setMid(1);}
+			
+			
+				
+				if(user.getRole()==r.EMPLOYEE)
+				{
+					if(!us.existsByUid(user.getMid()))
+						resp = new ResponseEntity<Users>(HttpStatus.BAD_REQUEST);
+					else
+				 {
+					Users u= us.addUser(user);
+					resp = new ResponseEntity<>(u, HttpStatus.OK);}
+				}
+			
+		
 		return resp;
 	}
 }

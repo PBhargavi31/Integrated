@@ -63,18 +63,70 @@ public class ResourceApi {
 		return resp;
 	}
 	
-	@GetMapping("/Rname/{srchValue}")
-	public ResponseEntity<List<Resourcer>> getAllRnames (
+//	@GetMapping("/Rname/{srchValue}")
+//	public ResponseEntity<List<Resourcer>> getAllRnames (
+//		@PathVariable("srchValue") String rname)
+//	{
+//		ResponseEntity<List<Resourcer>> resp;
+//			
+//			
+//				List<Resourcer> results =rs.findAllByRname(rname);
+//				if(results!=null && results.size()!=0){
+//					
+//					resp=new ResponseEntity<>(results,HttpStatus.OK);}
+//				else {
+//					resp=new ResponseEntity<>(HttpStatus.NOT_FOUND);}
+//	
+//		
+//		return resp;
+//	}
+	
+	@GetMapping("/Hard/{srchValue}")
+	public ResponseEntity<List<Resourcer>> getAllHardware (
 		@PathVariable("srchValue") String rname)
 	{
 		ResponseEntity<List<Resourcer>> resp;
+		Rtype r=null;
 			
 			
 				List<Resourcer> results =rs.findAllByRname(rname);
-				if(results!=null && results.size()!=0){
-					
-					resp=new ResponseEntity<>(results,HttpStatus.OK);}
+				//List<Resourcer> dummy = new List<Resourcer>();
+				if(results!=null && results.size()!=0 ){
+					results.forEach(i->{
+						if(!(i.getRtype()==r.HARDWARE)){
+							
+							results.remove(results.indexOf(i));
+						}
+					});
+					resp=new ResponseEntity<>(results,HttpStatus.OK);
+					}
 				else {
+					
+					resp=new ResponseEntity<>(HttpStatus.NOT_FOUND);}
+	
+		
+		return resp;
+	}
+	
+	@GetMapping("/Soft/{srchValue}")
+	public ResponseEntity<List<Resourcer>> getAllSoftware (
+		@PathVariable("srchValue") String rname)
+	{
+		ResponseEntity<List<Resourcer>> resp;
+			Rtype r=null;
+			
+				List<Resourcer> results =rs.findAllByRname(rname);
+				if(results!=null && results.size()!=0 ){
+					results.forEach(i->{
+						if(!(i.getRtype()==r.SOFTWARE)){
+							
+							results.remove(results.indexOf(i));
+						}
+					});
+					resp=new ResponseEntity<>(results,HttpStatus.OK);
+					}
+				else {
+					
 					resp=new ResponseEntity<>(HttpStatus.NOT_FOUND);}
 	
 		
@@ -99,6 +151,11 @@ public class ResourceApi {
 		
 		return resp;
 	}
+	
+	
+	
+	
+	
 	
 	@GetMapping("/Status/{srchValue}")
 	public ResponseEntity<List<Resourcer>> getAllResourcers (
@@ -130,8 +187,9 @@ public class ResourceApi {
 		
 		if (resp == null) {
 			Resourcer c = rs.addResource(resource);
-			c.setUid(0);
-			c.setRstatus(r.NA);
+//			c.setUid(0);
+			c.setRstatus(r.A);
+//			c.setIsdeleted(false);
 			if (c == null)
 				resp = new ResponseEntity<Resourcer>(HttpStatus.BAD_REQUEST);
 			else
@@ -153,7 +211,7 @@ public class ResourceApi {
 			
 			
 			else if(c.getUid()==0){
-				c.setRstatus(r.NA);
+				c.setRstatus(r.A);
 				resp=new ResponseEntity<Resourcer>(c,HttpStatus.OK);
 			System.out.println(c.getUid());
 			}

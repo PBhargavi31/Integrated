@@ -2,6 +2,7 @@ package com.verizon.ram.service;
 
 import java.util.List;
 
+import com.verizon.ram.model.Role;
 import com.verizon.ram.model.Users;
 
 public interface UserService {
@@ -12,5 +13,7 @@ public interface UserService {
 	List<Users> getUserByMid(Long mid);
 	
 	List<Users> findAllByMid(long mid);
+	List<Users> findAllByRole(Role role);
 
+	boolean existsByUid(long uid);
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.verizon.ram.dao.UsersDao;
+import com.verizon.ram.model.Role;
 import com.verizon.ram.model.Users;
 
 @Service
@@ -45,6 +46,18 @@ public class UserServiceImpl implements UserService {
 	public List<Users> findAllByMid(long mid) {
 		
 		return userdao.findAllByMid(mid);
+	}
+
+	@Override
+	public boolean existsByUid(long uid) {
+		
+		return userdao.existsById(uid);
+	}
+
+	@Override
+	public List<Users> findAllByRole(Role role) {
+		
+		return userdao.findAllByRole(role);
 	}
 
 }

@@ -32,6 +32,8 @@ public interface ResourceService {
 	
 	List<Resourcer> findAllByRname(String rname);
 	
+
+	
 	boolean existsByRid(long rid);
 	
 	
